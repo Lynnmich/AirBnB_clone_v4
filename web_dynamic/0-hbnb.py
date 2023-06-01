@@ -27,7 +27,7 @@ def close_db(error):
     storage.close()
 
 
-@app.route('/0-hbnb', strict_slashes=False)
+@app.route('/0-hbnb')
 def hbnb():
     """ HBNB is alive! """
     cache_id = str(uuid.uuid())
