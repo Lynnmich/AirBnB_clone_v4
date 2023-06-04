@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 """ Starts a Flash Web Application """
-import os
-import uuid
 from models import storage
 from models.state import State
 from models.city import City
@@ -9,16 +7,11 @@ from models.amenity import Amenity
 from models.place import Place
 from os import environ
 from flask import Flask, render_template
+import uuid
 
 app = Flask(__name__)
-app.url.map.strict_slashes = False
 # app.jinja_env.trim_blocks = True
 # app.jinja_env.lstrip_blocks = True
-
-"""If 100-hbnb.html is not present, use 8-hbnb.html"""
-template_path = "web_dynamic/0-hbnb.html"
-if not os.path.exists(template_path):
-    template_path = "web_flask/templates/8-hbnb.html"
 
 
 @app.teardown_appcontext
@@ -27,10 +20,9 @@ def close_db(error):
     storage.close()
 
 
-@app.route('/0-hbnb')
+@app.route('/100-hbnb/', strict_slashes=False)
 def hbnb():
     """ HBNB is alive! """
-    cache_id = str(uuid.uuid4())
     states = storage.all(State).values()
     states = sorted(states, key=lambda k: k.name)
     st_ct = []
@@ -43,13 +35,15 @@ def hbnb():
 
     places = storage.all(Place).values()
     places = sorted(places, key=lambda k: k.name)
+    cache_id = uuid.uuid4()
 
-    return render_template(template_path,
-                           cache_id=cache_id,
+    return render_template('100-hbnb.html',
                            states=st_ct,
                            amenities=amenities,
-                           places=places)
+                           places=places,
+                           cache_id=cache_id)
 
 
 if __name__ == "__main__":
+    """ Main Function """
     app.run(host='0.0.0.0', port=5000)
